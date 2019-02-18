@@ -2,13 +2,12 @@
 
 ## การทำงานกับ repo นี้
 1. ในครั้งแรกให้ทำการ fork ตัว repo นี้ไปเป็นของตัวเอง
-1. เมื่อมี feature เข้ามาใหม่ ให้ทำการ pull request กลับไปที่ repo ที่ทำการ fork ออกมาแล้วกด merge ซะ
+1. เมื่อมี project/feature เข้ามาใหม่ ให้ทำการ pull request กลับไปที่ repo ที่ทำการ fork ออกมาแล้วกด merge ซะ
 1. เมื่อจะเริ่มทำ feature ไหนก็ตาม ให้แตก branch ใหม่เป็นชื่อ feature นั้นๆก่อนเสมอ แล้วทำงานใน branch นั้น
 1. เมื่อต้องการส่งงานให้ทำ pull request จาก branch ที่ทำงานเข้ามา
 
-## Features
-1. Login
-1. Register
+## Projects
+1. [Hotel, ระบบจองโรงแรม](Hotel/README.md)
 
 ## Create WebApi + XUnit projects
 **Command line**
