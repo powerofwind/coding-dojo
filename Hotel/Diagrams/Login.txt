@@ -19,8 +19,14 @@ Server -> Server: ตรวจสอบว่า Username & Password ถูก�
 Server --> Client: ผลการ Login
 note right
     {
-        IsSuccess: bool
+        IsSuccess: bool,
+        Message: string
     }
 end note
+alt IsSuccess = false
+    Client -> User: แจ้งเตือนข้อผิดพลาด
+else IsSuccess = true
+    Client -> Client: เปลี่ยนหน้า **Home** เป็นหน้าหลัก
+end
 
 @enduml
