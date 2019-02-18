@@ -1,0 +1,39 @@
+@startuml
+
+hide footbox
+title Register
+
+actor User
+participant "<<Mobile>>\nClient" as Client
+participant "<<AccountController>>\nServer" as Server
+
+User -> Client: กดปุ่ม Register
+Client -> Server: <<POST>> api/account
+note left
+    {
+        Username: string,
+        Password: string
+    }
+end note
+Server -> Server: ตรวจสอบความถูกต้อง Username & Password
+alt ข้อมูลถูกต้อง
+    Server -> Server: กำหนด Id ให้กับผู้ใช้ใหม่
+    Server -> Server: เก็บข้อมูลผู้ใช้ใหม่
+    note right
+        {
+            Id: string,
+            Username: string,
+            Password: string
+        }
+    end note
+end
+
+Server --> Client: ผลการ Login
+note right
+    {
+        IsSuccess: bool,
+        Message: string
+    }
+end note
+
+@enduml
