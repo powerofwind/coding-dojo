@@ -1,0 +1,26 @@
+@startuml
+
+hide footbox
+title Login
+
+actor User
+participant "<<Mobile>>\nClient" as Client
+participant "<<AccountController>>\nServer" as Server
+
+User -> Client: กดปุ่ม Login
+Client -> Server: <<POST>> api/account/login
+note left
+    {
+        Username: string,
+        Password: string
+    }
+end note
+Server -> Server: ตรวจสอบว่า Username & Password ถูกต้องหรือไม่
+Server --> Client: ผลการ Login
+note right
+    {
+        IsSuccess: bool
+    }
+end note
+
+@enduml
