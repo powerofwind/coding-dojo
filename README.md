@@ -14,7 +14,7 @@
 ```
 dotnet new webapi -n WebApi
 dotnet new xunit -n WebApi.Tests
-dotnet add WebApi.Tests/WebApi.Tests.csproj reference WebApi.Tests/WebApi.Tests.csproj
+dotnet add WebApi.Tests/WebApi.Tests.csproj reference WebApi/WebApi.csproj
 ```
 
 ## Swagger
