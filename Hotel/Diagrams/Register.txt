@@ -36,4 +36,8 @@ note right
     }
 end note
 
+alt IsSuccess = false
+    Client -> User: แจ้งเตือนข้อผิดพลาด
+end
+
 @enduml
