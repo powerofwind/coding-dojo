@@ -1,0 +1,22 @@
+@startuml
+
+hide footbox
+title แสดงรายการบัญชีผู้ใช้
+
+actor User
+participant "<<Mobile>>\nClient" as Client
+participant "<<AccountController>>\nServer" as Server
+
+User -> Client: เรียกดูบัญชีทั้งหมด
+Client -> Server: <<GET>> api/account
+Server --> Client: รายการบัญชีทั้งหมด
+note right
+    [
+        {
+            Id: string,
+            Username: string,
+        }
+    ]
+end note
+
+@enduml

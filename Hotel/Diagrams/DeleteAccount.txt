@@ -1,0 +1,27 @@
+@startuml
+
+hide footbox
+title ลบบัญชีผู้ใช้
+
+actor User
+participant "<<Mobile>>\nClient" as Client
+participant "<<AccountController>>\nServer" as Server
+
+User -> Client: ลบบัญชีผู้ใช้
+Client -> Server: <<DELETE>> api/account/{id}
+Server -> Server: ตรวจว่ามีบัญชีที่จะลบหรือไม่
+alt มีบัญชีที่จะลบ
+    Server -> Server: ลบบัญชีที่เลือก
+end
+Server --> Client: ผลลัพท์ในการลบ
+note right
+    {
+        IsSuccess: bool,
+        Message: string
+    }
+end note
+alt IsSuccess = false
+    Client --> User: แจ้งเตือนข้อผิดพลาด
+end
+
+@enduml
