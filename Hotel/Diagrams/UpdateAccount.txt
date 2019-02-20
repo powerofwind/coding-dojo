@@ -1,0 +1,36 @@
+@startuml
+
+hide footbox
+title แก้ไขบัญชีผู้ใช้
+
+actor User
+participant "<<Mobile>>\nClient" as Client
+participant "<<AccountController>>\nServer" as Server
+
+User -> Client: แก้ไขข้อมูลบัญชีผู้ใช้
+Client -> Server: <<PUT>> api/account
+note left
+    {
+        Id: string,
+        Username: string,
+        Password: string
+    }
+end note
+Server -> Server: ตรวจสอบว่ามีบัญชีนั้นๆหรือไม่
+alt เจอบัญชีที่อยากจะแก้
+    Server -> Server: แก้ไขบัญชีผู้ใช้
+end
+
+Server --> Client: ผลลัพท์การแก้ไข
+note right
+    {
+        IsSuccess: bool,
+        Message: string
+    }
+end note
+
+alt IsSuccess = false
+    Client --> User: แจ้งเตือนข้อผิดพลาด
+end
+
+@enduml
