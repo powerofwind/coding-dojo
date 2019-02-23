@@ -12,6 +12,8 @@ namespace WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private static List<AccountInfo> accounts = new List<AccountInfo>();
+        private static List<AllAccount> allAccount = new List<AllAccount>();
+
 
         // POST api/account
         [HttpPost]
@@ -64,6 +66,90 @@ namespace WebApi.Controllers
                 IsSuccess = isFound,
                 Message = isFound ? "Login สำเร็จ" : "Username หรือ Password ไม่ถูก"
             };
+        }
+
+        // GET api/account
+        [HttpGet]
+        public IEnumerable<AccountInfo> Get()
+        {
+            return accounts;
+        }
+
+        // PUT api/account
+        [HttpPut]
+        public EditResult Put([FromBody] AccountInfo data)
+        {
+            //เช็คid ว่ามีidที่ต้องการแก้ไขข้อมูลไหม
+            var isEditAccount = accounts.Any(it => it.Id == data.Id);
+
+            if (isEditAccount)
+            {
+                //เช็คก่อนว่า user/pass ที่กรอกเข้ามาใหม่ใช้ได้ไหม (ต้องไม่ตรงกับที่มีอยู่ และ มี.length มากกว่า4)
+                if (data.Username.Length < 4 || data.Password.Length < 4)
+                {
+                    return new EditResult
+                    {
+                        IsSuccess = false,
+                        Message = "Username หรือ Password ต้องไม่ต่ำกว่า 4 ตัวอักษร"
+                    };
+                }
+
+                var isDuplicate = accounts.Any(it => it.Username == data.Username);
+                if (isDuplicate)
+                {
+                    return new EditResult
+                    {
+                        IsSuccess = false,
+                        Message = "Username มีอยู่ในระบบแล้ว"
+                    };
+                }
+
+                //ลบข้อมูลจาก id
+                var findAccount = accounts.FirstOrDefault(it => it.Id == data.Id);
+                accounts.Remove(findAccount);
+
+                //ใส่ค่าที่แก้ไข
+                accounts.Add(data);
+                return new EditResult
+                {
+                    IsSuccess = true,
+                    Message = "ระบบได้ทำการบันทึกข้อมูลเรียบร้อยแล้ว"
+                };
+            }
+
+            return new EditResult
+            {
+                IsSuccess = false,
+                Message = "ไม่มีบัญชีนี้ในระบบ"
+            };
+        }
+
+        // Delete api/account/{id}
+        [HttpDelete("{id}")]
+        public DeleteResult Delete(string id)
+        {
+            //เช็คid ว่ามีidที่ต้องการลบข้อมูลไหม
+            var isDeletedAccount = accounts.Any(it => it.Id == id);
+
+            if (isDeletedAccount)
+            {
+                 //ลบข้อมูลจาก id
+                var findAccount = accounts.FirstOrDefault(it => it.Id == id);
+                accounts.Remove(findAccount);
+                return new DeleteResult
+                {
+                    IsSuccess = true,
+                    Message = "บัญชีของคุณถูกลบออกจากระบบเรียบร้อยแล้ว"
+                };
+            }
+            else
+            {
+                return new DeleteResult
+                {
+                    IsSuccess = false,
+                    Message = "id ไม่ถูกต้อง"
+                };
+            }
         }
     }
 }
