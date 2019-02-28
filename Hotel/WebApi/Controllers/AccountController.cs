@@ -12,8 +12,6 @@ namespace WebApi.Controllers
     public class AccountController : ControllerBase
     {
         private static List<AccountInfo> accounts = new List<AccountInfo>();
-        private static List<AllAccount> allAccount = new List<AllAccount>();
-
 
         // POST api/account
         [HttpPost]
@@ -70,57 +68,37 @@ namespace WebApi.Controllers
 
         // GET api/account
         [HttpGet]
-        public IEnumerable<AccountInfo> Get()
+        public IEnumerable<GetAccountsResult> Get()
         {
-            return accounts;
+            //ใช้ select เพราะต้องการเปลี่ยนของใน account ซึ่งมีโมเดลเป็น AccountInfo ให้เป็น GetAccountsResult
+            return accounts.Select(it => new GetAccountsResult
+            {
+                Id = it.Id,
+                Username = it.Username
+            });
         }
 
         // PUT api/account
         [HttpPut]
         public EditResult Put([FromBody] AccountInfo data)
         {
-            //เช็คid ว่ามีidที่ต้องการแก้ไขข้อมูลไหม
-            var isEditAccount = accounts.Any(it => it.Id == data.Id);
-
-            if (isEditAccount)
+            //หาไอดีว่ามีไอดีนั้นมั้ย
+            var findID = accounts.FirstOrDefault(it => it.Id == data.Id);
+            if (findID == null)
             {
-                //เช็คก่อนว่า user/pass ที่กรอกเข้ามาใหม่ใช้ได้ไหม (ต้องไม่ตรงกับที่มีอยู่ และ มี.length มากกว่า4)
-                if (data.Username.Length < 4 || data.Password.Length < 4)
-                {
-                    return new EditResult
-                    {
-                        IsSuccess = false,
-                        Message = "Username หรือ Password ต้องไม่ต่ำกว่า 4 ตัวอักษร"
-                    };
-                }
-
-                var isDuplicate = accounts.Any(it => it.Username == data.Username);
-                if (isDuplicate)
-                {
-                    return new EditResult
-                    {
-                        IsSuccess = false,
-                        Message = "Username มีอยู่ในระบบแล้ว"
-                    };
-                }
-
-                //ลบข้อมูลจาก id
-                var findAccount = accounts.FirstOrDefault(it => it.Id == data.Id);
-                accounts.Remove(findAccount);
-
-                //ใส่ค่าที่แก้ไข
-                accounts.Add(data);
                 return new EditResult
                 {
-                    IsSuccess = true,
-                    Message = "ระบบได้ทำการบันทึกข้อมูลเรียบร้อยแล้ว"
+                    IsSuccess = false,
+                    Message = "ไม่พบบัญชีที่เลือก"
                 };
             }
 
+            findID.Password = data.Password;
+            findID.Username = data.Username;
             return new EditResult
             {
-                IsSuccess = false,
-                Message = "ไม่มีบัญชีนี้ในระบบ"
+                IsSuccess = true,
+                Message = "ข้อมูลได้ถูกแก้ไขแล้ว"
             };
         }
 
@@ -129,27 +107,27 @@ namespace WebApi.Controllers
         public DeleteResult Delete(string id)
         {
             //เช็คid ว่ามีidที่ต้องการลบข้อมูลไหม
-            var isDeletedAccount = accounts.Any(it => it.Id == id);
+            var findAccount = accounts.FirstOrDefault(it => it.Id == id);
 
-            if (isDeletedAccount)
-            {
-                 //ลบข้อมูลจาก id
-                var findAccount = accounts.FirstOrDefault(it => it.Id == id);
-                accounts.Remove(findAccount);
-                return new DeleteResult
-                {
-                    IsSuccess = true,
-                    Message = "บัญชีของคุณถูกลบออกจากระบบเรียบร้อยแล้ว"
-                };
-            }
-            else
+            if (findAccount == null)
             {
                 return new DeleteResult
                 {
                     IsSuccess = false,
-                    Message = "id ไม่ถูกต้อง"
+                    Message = "ไม่พบบัญชีที่เลือก"
                 };
             }
+
+            //ลบข้อมูลจาก id
+            accounts.Remove(findAccount);
+            return new DeleteResult
+            {
+                IsSuccess = true,
+                Message = "บัญชีของคุณถูกลบออกจากระบบเรียบร้อยแล้ว"
+                //  Message = string.Empty
+            };
+
         }
     }
 }
+
